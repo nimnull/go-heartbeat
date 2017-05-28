@@ -1,0 +1,12 @@
+.idea
+.env
+*.tmp
+.vagrant
+Vagrantfile
+ansible.log
+test*.yml
+test*.hosts
+test*
+*.tmp
+*.retry
+roles/ipsec/files/ssl/easyrsa3/pki/certs_by_serial/
