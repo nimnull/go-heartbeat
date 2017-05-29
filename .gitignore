@@ -9,4 +9,5 @@ test*.hosts
 test*
 *.tmp
 *.retry
+*.pyc
 roles/ipsec/files/ssl/easyrsa3/pki/certs_by_serial/
