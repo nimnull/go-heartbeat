@@ -1,6 +1,13 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
-	"rootPath": "node-agent"
+	"package": [
+		{
+			"checksumSHA1": "Ph0HqDi3FYZCSz8TojolQnVmsHo=",
+			"path": "github.com/ddliu/go-httpclient",
+			"revision": "6dc3c81f67fe0727278fc53e6b65e8423c6e3a23",
+			"revisionTime": "2016-12-17T09:37:44Z"
+		}
+	],
+	"rootPath": "node_agent"
 }
