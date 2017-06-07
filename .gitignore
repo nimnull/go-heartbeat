@@ -9,5 +9,6 @@ test*.hosts
 test*
 *.tmp
 *.retry
-*.pyc
+*.py[co]
 roles/ipsec/files/ssl/easyrsa3/pki/certs_by_serial/
+agent_linux.x86
