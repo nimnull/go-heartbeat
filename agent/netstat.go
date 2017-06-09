@@ -1,12 +1,17 @@
+// Copyright © 2017 Yehor Nazarkin <nimnull@gmail.com>
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package agent
-
-/*
-   Simple Netstat implementation.
-   Get data from /proc/net/tcp and /proc/net/udp and
-   and parse /proc/[0-9]/fd/[0-9].
-
-   Author: Rafael Santos <rafael@sourcecode.net.br>
-*/
 
 import (
 	"fmt"
