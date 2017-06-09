@@ -11,5 +11,9 @@ test*
 *.retry
 *.py[co]
 roles/ipsec/files/ssl/easyrsa3/pki/certs_by_serial/
-agent_linux.x86
+
+# golang vendoring folder
 vendor/*
+
+# ignored built executables
+node_agent.*
