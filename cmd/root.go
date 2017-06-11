@@ -94,10 +94,8 @@ func initConfig() {
 		// Find home directory.
 		home, err := homedir.Dir()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
-
 		// Search config in home directory with name "node_agent_conf" (without extension).
 		viper.AddConfigPath(home)
 		viper.AddConfigPath(".")
@@ -109,12 +107,12 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		viper.WatchConfig()
+		viper.OnConfigChange(func(e fsnotify.Event) {
+			fmt.Println("Config file changed:", e.Name)
+			if err := viper.ReadInConfig(); err == nil {
+				fmt.Println("Using config file:", viper.ConfigFileUsed())
+			}
+		})
 	}
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		fmt.Println("Config file changed:", e.Name)
-		if err := viper.ReadInConfig(); err == nil {
-			fmt.Println("Using config file:", viper.ConfigFileUsed())
-		}
-	})
 }

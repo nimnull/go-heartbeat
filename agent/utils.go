@@ -27,7 +27,7 @@ func ApiURIBuilder(apiFQDN string, useSSL bool) string {
 	}
 
 	if useSSL {
-		hostUrl.Scheme = "https://"
+		hostUrl.Scheme = "https"
 	}
 
 	if hostUrl.Host == "" {

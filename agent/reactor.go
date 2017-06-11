@@ -25,13 +25,20 @@ import (
 
 func StartReactor() {
 	sleepSecs := viper.GetInt("rtime")
+	apiURL := viper.GetString("api")
+	nodeName := viper.GetString("nodename")
+	watchPort := viper.GetInt("port")
+	debugFlag := viper.GetBool("debug")
+
+	if debugFlag {
+		log.Printf("Debug:\t%s\n", strconv.FormatBool(debugFlag))
+		log.Printf("API:\t%s\n", apiURL)
+		log.Printf("Node name:\t%s\n", nodeName)
+		log.Printf("Port to watch:\t%s\n", strconv.FormatInt(int64(watchPort), 10))
+	}
 
 	for {
-		go stateUpdateExecutor(
-			viper.GetString("api"),
-			viper.GetString("nodename"),
-			viper.GetInt("port"),
-			viper.GetBool("debug"))
+		stateUpdateExecutor(apiURL, nodeName, watchPort, debugFlag)
 		time.Sleep(time.Second * time.Duration(sleepSecs))
 	}
 
@@ -40,9 +47,8 @@ func StartReactor() {
 func stateUpdateExecutor(apiHost, nodeName string, nodePort int, debug bool) {
 
 	unique := make(map[string]int)
+	// channel would be closed as soon Tcp() will finish collecting info
 	proc_ex := make(chan Process, 10)
-	defer close(proc_ex)
-
 	go Tcp(proc_ex)
 
 	for proc := range proc_ex {
