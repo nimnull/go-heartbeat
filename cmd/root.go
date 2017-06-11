@@ -73,12 +73,14 @@ func init() {
 	RootCmd.Flags().Bool("debug", false, "Switch DEBUG mode")
 	RootCmd.Flags().String("api", "localhost", "FQDN for api to report")
 	RootCmd.Flags().String("nodename", hostname, "FQDN to report as current node")
+	RootCmd.Flags().Uint("port", 3000, "Port to observe")
 	RootCmd.Flags().Uint("rtime", 3, "Refresh timeout seconds")
 
 	viper.BindPFlag("ssl", RootCmd.Flags().Lookup("ssl"))
 	viper.BindPFlag("debug", RootCmd.Flags().Lookup("debug"))
 	viper.BindPFlag("api", RootCmd.Flags().Lookup("api"))
 	viper.BindPFlag("nodename", RootCmd.Flags().Lookup("nodename"))
+	viper.BindPFlag("port", RootCmd.Flags().Lookup("port"))
 	viper.BindPFlag("rtime", RootCmd.Flags().Lookup("rtime"))
 
 }

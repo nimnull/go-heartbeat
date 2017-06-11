@@ -33,6 +33,7 @@ func ApiURIBuilder(apiFQDN string, useSSL bool) string {
 	if hostUrl.Host == "" {
 		log.Fatalf("Can't recognize provided API host FQDN: %s\n", apiFQDN)
 	}
+	hostUrl.Port()
 	hostUrl.Path = "/api/v1/nodes/"
 	return hostUrl.String()
 }

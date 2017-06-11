@@ -30,13 +30,14 @@ func StartReactor() {
 		go stateUpdateExecutor(
 			viper.GetString("api"),
 			viper.GetString("nodename"),
+			viper.GetInt("port"),
 			viper.GetBool("debug"))
 		time.Sleep(time.Second * time.Duration(sleepSecs))
 	}
 
 }
 
-func stateUpdateExecutor(apiHost, nodeName string, debug bool) {
+func stateUpdateExecutor(apiHost, nodeName string, nodePort int, debug bool) {
 
 	unique := make(map[string]int)
 	proc_ex := make(chan Process, 10)
@@ -45,7 +46,7 @@ func stateUpdateExecutor(apiHost, nodeName string, debug bool) {
 	go Tcp(proc_ex)
 
 	for proc := range proc_ex {
-		if proc.State == ESTABLISHED && proc.Port == 3000 {
+		if proc.State == ESTABLISHED && proc.Port == int64(nodePort) {
 			if _, ok := unique[proc.ForeignIp]; ok {
 				unique[proc.ForeignIp] += 1
 			} else {
@@ -62,8 +63,9 @@ func stateUpdateExecutor(apiHost, nodeName string, debug bool) {
 		Post(apiHost).
 		Retry(3, 5*time.Second, http.StatusBadGateway, http.StatusGatewayTimeout).
 		SendMap(map[string]string{
-			"node":  nodeName,
-			"count": strconv.FormatInt(int64(len(unique)), 10),
+			"node":        nodeName,
+			"connections": strconv.FormatInt(int64(len(unique)), 10),
+			"port":        strconv.FormatInt(int64(nodePort), 10),
 		}).
 		End()
 	if len(errs) > 0 {
