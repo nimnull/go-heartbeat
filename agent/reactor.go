@@ -66,13 +66,15 @@ func stateUpdateExecutor(apiHost, nodeName string, nodePort int, debug bool) {
 		Timeout(time.Second*3).
 		Set("Accept", "application/json").
 		Set("Accept-Language", "en-us").
+		Set("User-Agent", "node_agent_v1.0").
 		Post(apiHost).
-		Retry(3, 5*time.Second, http.StatusBadGateway, http.StatusGatewayTimeout).
-		SendMap(map[string]string{
+		Type("form").
+		Send(map[string]string{
 			"node":        nodeName,
 			"connections": strconv.FormatInt(int64(len(unique)), 10),
 			"port":        strconv.FormatInt(int64(nodePort), 10),
 		}).
+		Retry(3, 5*time.Second, http.StatusBadGateway, http.StatusGatewayTimeout).
 		End()
 	if len(errs) > 0 {
 		log.Printf("Request to %s failed: %s\n", apiHost, resp.Status)
