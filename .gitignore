@@ -9,5 +9,11 @@ test*.hosts
 test*
 *.tmp
 *.retry
-*.pyc
+*.py[co]
 roles/ipsec/files/ssl/easyrsa3/pki/certs_by_serial/
+
+# golang vendoring folder
+vendor/*
+
+# ignored built executables
+node_agent.*

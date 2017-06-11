@@ -1,0 +1,6 @@
+---
+api: nl-dataservice01.vpnx.pw
+ssl: true
+nodename: nl-node02.vpnx.pw
+port: 3000
+rtime: 2
