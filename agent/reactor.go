@@ -41,7 +41,7 @@ func StartReactor() {
 	for {
 		select {
 		case <-ticker.C:
-			stateUpdateExecutor(&apiURL, &nodeName, &watchPort, &debugFlag)
+			protect(stateUpdateExecutor)
 		case <-quit:
 			ticker.Stop()
 			return
@@ -49,12 +49,20 @@ func StartReactor() {
 	}
 }
 
-func stateUpdateExecutor(apiHost, nodeName *string, nodePort *int, debug *bool) {
+func protect(f func()) {
 	defer func() {
 		if x := recover(); x != nil {
-			log.Printf("run time panic: %v", x)
+			log.Printf("Runtime panic %v\n", x)
 		}
 	}()
+	f()
+}
+
+func stateUpdateExecutor() {
+	apiURL := viper.GetString("api")
+	nodeName := viper.GetString("nodename")
+	watchPort := viper.GetInt("port")
+	debugFlag := viper.GetBool("debug")
 
 	unique := make(map[string]int)
 	// channel would be closed as soon Tcp() will finish collecting info
@@ -62,7 +70,7 @@ func stateUpdateExecutor(apiHost, nodeName *string, nodePort *int, debug *bool) 
 	go Tcp(proc_ex)
 
 	for proc := range proc_ex {
-		if proc.State == ESTABLISHED && proc.Port == int64(*nodePort) {
+		if proc.State == ESTABLISHED && proc.Port == int64(watchPort) {
 			if _, ok := unique[proc.ForeignIp]; ok {
 				unique[proc.ForeignIp] += 1
 			} else {
@@ -73,22 +81,22 @@ func stateUpdateExecutor(apiHost, nodeName *string, nodePort *int, debug *bool) 
 
 	request := gorequest.New()
 	resp, body, errs := request.
-		SetDebug(*debug).
+		SetDebug(debugFlag).
 		Timeout(time.Second*3).
 		Set("Accept", "application/json").
 		Set("Accept-Language", "en-us").
 		Set("User-Agent", "node_agent_v1.0").
-		Post(*apiHost).
+		Post(apiURL).
 		Type("form").
 		Send(map[string]string{
-			"node":        *nodeName,
+			"node":        nodeName,
 			"connections": strconv.FormatInt(int64(len(unique)), 10),
-			"port":        strconv.FormatInt(int64(*nodePort), 10),
+			"port":        strconv.FormatInt(int64(watchPort), 10),
 		}).
 		Retry(3, 5*time.Second, http.StatusBadGateway, http.StatusGatewayTimeout).
 		End()
 	if len(errs) > 0 {
-		log.Printf("Request to %s failed: %s\n", *apiHost, resp.Status)
+		log.Printf("Request to %s failed: %s\n", apiURL, resp.Status)
 		for _, err := range errs {
 			log.Printf("%s\n", err)
 		}
